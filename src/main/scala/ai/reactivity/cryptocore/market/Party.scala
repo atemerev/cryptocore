@@ -5,4 +5,4 @@ case class Party(id: String)
 object Party:
   val Me: Party = Party("Me")
 
-given Conversion[String, Party] = Party(_)
+  given Conversion[String, Party] = Party(_)

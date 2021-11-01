@@ -1,6 +1,7 @@
 package ai.reactivity.cryptocore
 
+import ai.reactivity.cryptocore.market.Party
+
 object Main extends App {
-  val d: Decimal = 2.45 / 4
-  println(d)
+  val party: Party = "abc"
 }

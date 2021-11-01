@@ -27,10 +27,12 @@ object Decimal:
       truncated / SCALE_FACTOR
   }
 
+
+
   def apply(value: Int): Decimal = Decimal(value.toDouble)
 
   extension (x: Decimal)
     def toDouble: Double = x
 
-given Conversion[Double, Decimal] = Decimal(_)
-given Conversion[Int, Decimal] = Decimal(_)
+  given Conversion[Double, Decimal] = Decimal(_)
+  given Conversion[Int, Decimal] = Decimal(_)
