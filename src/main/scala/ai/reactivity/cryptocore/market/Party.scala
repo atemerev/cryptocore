@@ -3,4 +3,6 @@ package ai.reactivity.cryptocore.market
 case class Party(id: String)
 
 object Party:
-  lazy val Me = Party("Me")
+  val Me: Party = Party("Me")
+
+given Conversion[String, Party] = Party(_)

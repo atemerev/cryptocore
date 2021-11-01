@@ -1,10 +1,8 @@
 package ai.reactivity.cryptocore.instrument
 
-import ai.reactivity.cryptocore.{Crypto, Fiat}
-
 object Symbology {
-  lazy val BTC = Crypto("BTC")
-  lazy val ETH = Crypto("ETH")
-  lazy val USD = Fiat("USD")
-  lazy val USDT = Stablecoin("USDT")
+  val BTC  = Crypto("BTC")
+  val ETH  = Crypto("ETH")
+  val USD  = Fiat("USD")
+  val USDT = Stablecoin("USDT")
 }

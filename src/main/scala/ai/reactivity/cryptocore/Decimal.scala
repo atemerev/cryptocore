@@ -32,6 +32,5 @@ object Decimal:
   extension (x: Decimal)
     def toDouble: Double = x
 
-  implicit def doubleToDecimal(d: Double): Decimal = Decimal(d)
-
-  implicit def intToDecimal(i: Int): Decimal = Decimal(i)
+given Conversion[Double, Decimal] = Decimal(_)
+given Conversion[Int, Decimal] = Decimal(_)

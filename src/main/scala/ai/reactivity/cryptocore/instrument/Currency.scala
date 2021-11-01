@@ -1,7 +1,5 @@
 package ai.reactivity.cryptocore.instrument
 
-import ai.reactivity.cryptocore.{Asset, CurrencyPair}
-
 /**
  * A representation of currency, fiat or crypto. E.g. USD for US Dollar, or ETH for Ethereum.
  * Currencies using the same symbol are considered to be identical.

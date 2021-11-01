@@ -1,7 +1,5 @@
 package ai.reactivity.cryptocore.instrument
 
-import ai.reactivity.cryptocore.Currency
-
 /**
  * A fiat currency, e.g. US Dollar or Euro.
  *
