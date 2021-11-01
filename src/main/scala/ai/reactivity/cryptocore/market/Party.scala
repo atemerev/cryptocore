@@ -1,4 +1,4 @@
-package ai.reactivity.cryptocore
+package ai.reactivity.cryptocore.market
 
 case class Party(id: String)
 

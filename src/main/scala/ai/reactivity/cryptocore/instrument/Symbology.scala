@@ -1,4 +1,6 @@
-package ai.reactivity.cryptocore
+package ai.reactivity.cryptocore.instrument
+
+import ai.reactivity.cryptocore.{Crypto, Fiat}
 
 object Symbology {
   lazy val BTC = Crypto("BTC")

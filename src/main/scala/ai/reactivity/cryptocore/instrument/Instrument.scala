@@ -1,4 +1,4 @@
-package ai.reactivity.cryptocore
+package ai.reactivity.cryptocore.instrument
 
 /**
  * A trading instrument (e.g. a spot currency pair, or a perpetual futures contract, or

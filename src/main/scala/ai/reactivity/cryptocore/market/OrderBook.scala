@@ -1,4 +1,7 @@
-package ai.reactivity.cryptocore
+package ai.reactivity.cryptocore.market
+
+import ai.reactivity.cryptocore.instrument.Instrument
+import ai.reactivity.cryptocore.{Order, Party, Side}
 
 class OrderBook private(val party: Party, val instrument: Instrument)
 
