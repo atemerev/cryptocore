@@ -1,5 +1,6 @@
 package ai.reactivity.cryptocore
-import scala.language.implicitConversions
+
+import math.Fractional.Implicits.infixFractionalOps
 
 /**
  * The Decimal type is a decimal-normalized Double, suitable for financial calculations.
@@ -10,7 +11,7 @@ import scala.language.implicitConversions
  */
 opaque type Decimal = Double
 
-object Decimal:
+object Decimal {
 
   inline val SCALE_FACTOR = 1e8d
   inline val SCALE_LIMIT = Long.MaxValue / SCALE_FACTOR
@@ -27,12 +28,26 @@ object Decimal:
       truncated / SCALE_FACTOR
   }
 
-
-
   def apply(value: Int): Decimal = Decimal(value.toDouble)
 
-  extension (x: Decimal)
+  extension (x: Decimal) {
     def toDouble: Double = x
+    def +(y: Decimal): Decimal = Decimal(x + y)
+    def -(y: Decimal): Decimal = Decimal(x - y)
+    def *(y: Decimal): Decimal = Decimal(x * y)
+    def /(y: Decimal): Decimal = Decimal(x / y)
+    def %(y: Decimal): Decimal = Decimal(x % y)
+    def unary_- : Decimal = Decimal(-x)
+  }
 
   given Conversion[Double, Decimal] = Decimal(_)
   given Conversion[Int, Decimal] = Decimal(_)
+
+  // Equality
+
+  given CanEqual[Decimal, Double] = CanEqual.derived
+  given CanEqual[Double, Decimal] = CanEqual.derived
+  given CanEqual[Decimal, Int] = CanEqual.derived
+  given CanEqual[Int, Decimal] = CanEqual.derived
+
+}
