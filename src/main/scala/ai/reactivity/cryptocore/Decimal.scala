@@ -49,5 +49,4 @@ object Decimal {
   given CanEqual[Double, Decimal] = CanEqual.derived
   given CanEqual[Decimal, Int] = CanEqual.derived
   given CanEqual[Int, Decimal] = CanEqual.derived
-
 }

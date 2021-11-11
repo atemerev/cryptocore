@@ -1,11 +1,20 @@
 package ai.reactivity.cryptocore
 
+import ai.reactivity.cryptocore.OrderBookSuite.*
 import ai.reactivity.cryptocore.instrument.*
 import ai.reactivity.cryptocore.market.*
+import ai.reactivity.cryptocore.market.Party.Me
 import org.scalatest.funsuite.AnyFunSuite
+import Symbology.*
 
 class OrderBookSuite extends AnyFunSuite {
+  val ts = 1273787999996L
+  private val orderBook = fromCsv("1273787999996,EUR/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,1.2523,1000000,ASKS,1.2524,1000000,1.25246,1000000")
 
+  test("remove best bid from order book") {
+    val newBook = orderBook.remove(OrderKey(Me, BTC/USD, Side.Bid, "0"))
+    assert("1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,ASKS,1.2524,1000000,1.25246,1000000" === toCsv(newBook, ts))
+  }
 }
 
 object OrderBookSuite {
