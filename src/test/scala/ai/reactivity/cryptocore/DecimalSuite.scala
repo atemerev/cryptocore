@@ -1,6 +1,7 @@
 package ai.reactivity.cryptocore
 
 import org.scalatest.funsuite.AnyFunSuite
+import Decimal.given
 
 class DecimalSuite extends AnyFunSuite {
   test("Decimal rounding") {

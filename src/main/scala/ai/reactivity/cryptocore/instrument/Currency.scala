@@ -6,4 +6,6 @@ package ai.reactivity.cryptocore.instrument
  */
 trait Currency extends Asset {
   def /(quote: Currency) = CurrencyPair(this, quote)
+
+  override def toString: String = symbol
 }
