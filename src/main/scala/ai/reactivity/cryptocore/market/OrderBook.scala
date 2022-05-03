@@ -56,6 +56,32 @@ class OrderBook private(val instrument: Instrument,
     val toRemove = byKey.keys.filter(_.id == orderId)
     toRemove.foldLeft(this)((b: OrderBook, k: OrderKey) => b.remove(k))
   }
+
+  def matchWith(order: Order, matched: Seq[Match]): (OrderBook, Seq[Match]) = {
+    // assuming order is aggressive, "match only"
+    val oppositeLine = if (order.key.side == Side.Bid) this.offers else this.bids
+    if (oppositeLine.isEmpty || order.quantity == 0) {
+      // nothing to match
+      (this, matched)
+    } else {
+      val (bestPrice, bestAgg) = oppositeLine.head
+      if (order.key.side == Side.Bid && bestPrice > order.price || order.key.side == Side.Offer && bestPrice < order.price) {
+        // best opposite aggregate does not match with the current order
+        (this, matched)
+      } else {
+        val oppOrder = bestAgg.orders.head
+        val commonAmount: Decimal = math.min(order.quantity.toDouble, oppOrder.quantity.toDouble)
+        val newOrder = order.copy(quantity = order.quantity - commonAmount)
+        val newBook = if (oppOrder.quantity <= commonAmount) this.remove(oppOrder.key) else {
+          val bookWithRemoved = this.remove(oppOrder.key)
+          val newOppOrder = oppOrder.copy(quantity = oppOrder.quantity - commonAmount)
+          bookWithRemoved.add(newOppOrder)
+        }
+        val matchEvent = Match(order.key.id, order.key.id, commonAmount, oppOrder.price)
+        this.matchWith(newOrder, matched :+ matchEvent)
+      }
+    }
+  }
 }
 
 object OrderBook {
