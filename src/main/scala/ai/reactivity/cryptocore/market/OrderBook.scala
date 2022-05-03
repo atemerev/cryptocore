@@ -77,11 +77,13 @@ class OrderBook private(val instrument: Instrument,
           val newOppOrder = oppOrder.copy(quantity = oppOrder.quantity - commonAmount)
           bookWithRemoved.add(newOppOrder)
         }
-        val matchEvent = Match(order.key.id, order.key.id, commonAmount, oppOrder.price)
+        val matchEvent = Match(order.key.side, order.key.id, oppOrder.key.id, commonAmount, oppOrder.price)
         newBook.matchWith(newOrder, matched :+ matchEvent)
       }
     }
   }
+
+  def matchWith(order: Order): (OrderBook, Seq[Match]) = matchWith(order, Seq.empty)
 }
 
 object OrderBook {

@@ -12,32 +12,39 @@ class OrderBookSuite extends AnyFunSuite {
   private val orderBook = fromCsv("1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000,1.25246,1000000")
 
   test("remove best bid from order book") {
-    val newBook = orderBook remove OrderKey(Me, BTC/USD, Side.Bid, "0") 
+    val newBook = orderBook.remove(OrderKey(Me, BTC/USD, Side.Bid, "0"))
     assert("1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,OFFERS,1.2524,1000000,1.25246,1000000" === toCsv(newBook, ts))
   }
 
   test("remove mid bid from order book") {
-    val newBook = orderBook remove OrderKey(Me, BTC/USD, Side.Bid, "2")
+    val newBook = orderBook.remove(OrderKey(Me, BTC/USD, Side.Bid, "2"))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000,1.25246,1000000" === toCsv(newBook, ts)
   }
 
   test("remove best Offer from order book") {
-    val newBook = orderBook remove OrderKey(Me, BTC/USD, Side.Offer, "0")
+    val newBook = orderBook.remove(OrderKey(Me, BTC/USD, Side.Offer, "0"))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,1.2523,1000000,OFFERS,1.25246,1000000" === toCsv(newBook, ts)
   }
 
   test("remove far Offer from order book") {
-    val newBook = orderBook remove OrderKey(Me, BTC/USD, Side.Offer, "1")
+    val newBook = orderBook.remove(OrderKey(Me, BTC/USD, Side.Offer, "1"))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000" === toCsv(newBook, ts)
   }
 
   test("add mid bid to order book") {
-    val newBook = orderBook add Order(OrderKey(Me, BTC/USD, Side.Bid, "*"), Decimal(500000), Decimal(1.25214))
+    val newBook = orderBook.add(Order(OrderKey(Me, BTC/USD, Side.Bid, "*"), Decimal(500000), Decimal(1.25214)))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.25214,500000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000,1.25246,1000000" === toCsv(newBook, ts)
-    val newBook2 = newBook add Order(OrderKey(Me, BTC/USD, Side.Bid, "*"), Decimal(1000000), Decimal(1.25214))
+    val newBook2 = newBook.add(Order(OrderKey(Me, BTC/USD, Side.Bid, "*"), Decimal(1000000), Decimal(1.25214)))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.25214,1000000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000,1.25246,1000000" === toCsv(newBook2, ts)
-    val newBook3 = newBook2 add Order(OrderKey(Me, BTC/USD, Side.Bid, "*2"), Decimal(1000), Decimal(1.25214))
+    val newBook3 = newBook2.add(Order(OrderKey(Me, BTC/USD, Side.Bid, "*2"), Decimal(1000), Decimal(1.25214)))
     "1273787999996,BTC/USD,BIDS,1.25208,1000000,1.25212,2000000,1.25213,1000000,1.25214,1000,1.25214,1000000,1.2522,1000000,1.2523,1000000,OFFERS,1.2524,1000000,1.25246,1000000" === toCsv(newBook3, ts)
+  }
+
+  test("matcher smoke test") {
+    val aggressiveOrder = Order(Party.Me, BTC/USD, Side.Bid, "agg1", 1500000, 1.2525)
+    val (book, matches) = orderBook.matchWith(aggressiveOrder, Seq.empty)
+    println(matches)
+    println(toCsv(book, System.currentTimeMillis()))
   }
 }
 
@@ -48,12 +55,12 @@ object OrderBookSuite {
     val ccys = tokens(1).split("/")
     val instrument = CurrencyPair(Crypto(ccys(0)), Fiat(ccys(1)))
     val OffersIndex = tokens.indexOf("OFFERS")
-    val bidS: List[(String, String)] = pair(tokens.slice(3, OffersIndex).toList)
-    val OFFERS: List[(String, String)] = pair(tokens.slice(OffersIndex + 1, tokens.length).toList)
-    val bidSize = bidS.size
-    val orders = bidS.zipWithIndex.map(
+    val bids: List[(String, String)] = pair(tokens.slice(3, OffersIndex).toList)
+    val offers: List[(String, String)] = pair(tokens.slice(OffersIndex + 1, tokens.length).toList)
+    val bidSize = bids.size
+    val orders = bids.zipWithIndex.map(
       n => Order(Party.Me, instrument, Side.Bid, (bidSize - n._2 - 1).toString, n._1._2.toDouble, n._1._1.toDouble)) ++
-      OFFERS.zipWithIndex.map(n => Order(Party.Me, instrument, Side.Offer, n._2.toString, n._1._2.toDouble, n._1._1.toDouble))
+      offers.zipWithIndex.map(n => Order(Party.Me, instrument, Side.Offer, n._2.toString, n._1._2.toDouble, n._1._1.toDouble))
     OrderBook(orders)
   }
 
