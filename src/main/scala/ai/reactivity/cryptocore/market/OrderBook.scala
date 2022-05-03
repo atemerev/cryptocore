@@ -78,7 +78,7 @@ class OrderBook private(val instrument: Instrument,
           bookWithRemoved.add(newOppOrder)
         }
         val matchEvent = Match(order.key.id, order.key.id, commonAmount, oppOrder.price)
-        this.matchWith(newOrder, matched :+ matchEvent)
+        newBook.matchWith(newOrder, matched :+ matchEvent)
       }
     }
   }
